@@ -1,80 +1,44 @@
-from tkinter import *
-from tkinter import ttk
-import sqlite3
+"""Horizontal layout example."""
+import os
+import django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'db_settings')
+django.setup()
+
+import sys
+
 from app.models import Product
 
-class Products:
- 
-
-    def __init__(self, window):
-        self.wind = window
-        self.wind.title('Productos')
-        # self.wind.geometry('750x450')
-        self.wind.resizable(0, 0)
-
-        # Registra un producto nuevo
-        frame = LabelFrame(self.wind, text='Ingresar un preducto nuevo')
-        frame.grid(row=0, column=0, columnspan=3, pady=20)
-
-        # Ingresa el nombre
-        Label(frame, text='Nombre: ').grid(row=1, column=0)
-        self.name = Entry(frame)
-        self.name.focus()
-        self.name.grid(row=1, column=1)
-
-        # Ingresa el precio
-        Label(frame, text='Stock: ').grid(row=2, column=0)
-        self.price = Entry(frame)
-        self.price.grid(row=2, column=1)
-
-        # Boton de guardar producto
-        ttk.Button(frame, text='Guardar producto', command=self.add_product).grid(
-            row=4, columnspan=2, sticky=W+E)
-
-        # Mensaje de producto agregado
-        self.message = Label(text='', fg='red')
-        self.message.grid(row=3, column=0, columnspan=2, sticky=W + E)
-
-        # Tabla
-        self.tree = ttk.Treeview(
-            height=8, columns=("#1", "#2"))
-        self.tree.grid(row=4, column=0, columnspan=2)
-        self.tree.heading('#0', text='Nombre', anchor=CENTER)
-    
-
-        # Boton para borrar productos
-        ttk.Button(text='Borrar', command=self.delete_product).grid(
-            row=5, column=0, sticky=W + E)
-        ttk.Button(text='Editar', command=self.edit_product).grid(
-            row=5, column=1, sticky=W + E)
-
-        self.get_products()
-
-    
-    # Permite obtener la lista de productos desde la base de datos
-    def get_products(self):
-        records = self.tree.get_children()
-        for elements in records:
-            self.tree.delete(elements)
-        
-        products = Product.objects.all()
-        for product in products:
-            self.tree.insert('', 0,  values=(product.name))
-
-    # Agregua un nuevo producto
-    def add_product(self):
-        Product(name=self.name.get()).save()
-        self.message['text'] = 'El producto {} ha sido agregado exitosamente'.format(
-            self.name.get())
-        self.name.delete(0, END)
-        self.price.delete(0, END)
-        self.stock.delete(0, END)
-        
-        self.get_products()
-    
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem
 
 
-if __name__ == '__main__':
-    window = Tk()
-    application = Products(window)
-    window.mainloop()
+app = QApplication(sys.argv)
+window = QWidget()
+window.setWindowTitle('QHBoxLayout')
+layout = QHBoxLayout()
+
+#Product(name="Nuevo producto", bar_code="barcode2").save()
+#Product(name="Nuevo producto 2 ", bar_code="barcode3").save()
+#Product(name="Nuevo producto 3", bar_code="barcode1").save()
+
+
+products = Product.objects.all()
+
+tableWidget = QTableWidget()
+
+tableWidget.setRowCount(len(products))
+tableWidget.setColumnCount(2)
+c = 0
+for product in products:
+    tableWidget.setItem(c,0, QTableWidgetItem(product.bar_code))
+    tableWidget.setItem(c,1, QTableWidgetItem(product.name))
+    c+=1
+
+layout.addWidget(tableWidget)
+
+window.setLayout(layout)
+window.show()
+sys.exit(app.exec_())
