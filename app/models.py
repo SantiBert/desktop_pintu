@@ -15,41 +15,40 @@ QUANTITY_TYPES = (
     )
 
 class Someone(models.Model):
-    first_name = 
-    last_name = 
-    address = 
-    phone_number = 
-    email = 
-    description = 
-    is_client = 
-    is_seller = 
+    first_name = models.CharField(max_length= 150)
+    last_name = models.CharField(max_length= 150)
+    address = models.CharField(max_length= 150)
+    phone_number = models.CharField(max_length= 20)
+    email = models.EmailField( max_length=254)
+    description = models.TextField()
+    is_client = models.BooleanField(default= False)
+    is_seller = models.BooleanField(default= False)
 
 
 
 class Sale(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    client = models.ForeingKey(Someone, on_delete=models.PROTECT)
+    client = models.ForeignKey(Someone, on_delete=models.PROTECT)
     total = models.DecimalField(max_digits=10, decimal_places=2)
 
 class SaleProducts(models.Model):
-    sale = models.ForeingKey(Sale, on_delet=models.PROTECT)
-    product = models.ForeingKey(Product, on_delete=models.PROTECT)
+    sale = models.ForeignKey(Sale, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.FloatField()
-    quantity_type = models.CharField(choises=QUANTITY_TYPES)
+    quantity_type = models.CharField(choices=QUANTITY_TYPES,max_length=100)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     unit_type = models.CharField(max_length=25)
     total = models.DecimalField(max_digits=10, decimal_places=2)
 
 class Purchase(models.Model):
-    seller = models.ForeingKey(Someone, on_delete=models.PROTECT)
+    seller = models.ForeignKey(Someone, on_delete=models.PROTECT)
     date = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2)
     
 class PurchaseProduct(models.Model):
-    purchase = models.ForeingKey(Purchase, on_delete=models.PROTECT)
-    product = models.ForeingKey(Product, on_delete=models.PROTECT)
-    traceability_code = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    quantity = models.FlaotField()
-    quantity_type = models.CharField(choises=QUANTITY_TYPES)
+    purchase = models.ForeignKey(Purchase, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    quantity = models.FloatField()
+    quantity_type = models.CharField(choices=QUANTITY_TYPES, max_length=100)
     date = models.DateTimeField(auto_now_add=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)

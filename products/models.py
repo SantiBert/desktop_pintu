@@ -3,15 +3,27 @@ import uuid
 from django.db import models
 
 
-class Product(models.Model):    
+class Product(models.Model):
+    STOCK_TYPE = (
+        ("KG", "KG"),
+        ("MTS", "MTS"),
+        ("LTS", "LTS"),
+        ("U", "U"),
+        ("M2","M2"),
+    )    
     name = models.CharField(max_length=200)
-    bar_code = models.CharField(max_length=25, unique=True)
-    stock_quantity = models.FloatField()
-    last_price = models.Float
+    barcode = models.CharField(max_length=25, unique=True)
+    stocked = models.FloatField()
+    stock_type = models.CharField(max_length=20, choices=STOCK_TYPE)
+    last_price = models.FloatField()
+    is_active = models.BooleanField(default=True)
+    #qr = models.ImageField()
 
 
 class ProductPrices(models.Model):
-    product = models.ForeingKey(Product)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateTimeField()
+    cost =  models.DecimalField(max_digits=10, decimal_places=2)
+    date_from = models.DateTimeField()
+    date_to = models.DateTimeField()    
     is_active = models.BooleanField(default=True)
