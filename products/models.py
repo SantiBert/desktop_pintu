@@ -12,10 +12,11 @@ class Product(models.Model):
         ("M2","M2"),
     )    
     name = models.CharField(max_length=200)
+    description = models.TextField()
     barcode = models.CharField(max_length=25, unique=True)
     stocked = models.FloatField()
     stock_type = models.CharField(max_length=20, choices=STOCK_TYPE)
-    last_price = models.FloatField()
+    last_price = models.DecimalField(max_digits=10, decimal_places=2)
     is_active = models.BooleanField(default=True)
     #qr = models.ImageField()
 

@@ -1,0 +1,7 @@
+Exception trying to save product - {e}
+Exception trying to save product - UNIQUE constraint failed: products_product.barcode
+ERROR trying to save product - UNIQUE constraint failed: products_product.barcode
+ERROR trying to save product - UNIQUE constraint failed: products_product.barcode
+ERROR trying to save product - UNIQUE constraint failed: products_product.barcode
+ERROR trying to save product - UNIQUE constraint failed: products_product.barcode
+ERROR trying to save product - UNIQUE constraint failed: products_product.barcode

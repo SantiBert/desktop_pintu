@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class PaymentConfig(AppConfig):
+class ProductsConfig(AppConfig):
     name = 'products'
-
+    
