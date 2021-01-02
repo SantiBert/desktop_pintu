@@ -1,16 +1,14 @@
 import pdb
 import logging
 from typing import List
-
+from django.db.models import Q
 
 from .models import Product
 from .error_messages import (
     ERROR_SAVING_PRODUCT,
 )
 
-
 logger = logging.getLogger("django")
-
 
 def create_product(
     name:str = "",
@@ -48,18 +46,20 @@ def create_product(
 
 
 def delete_product(product_id:int, barcode:str) -> bool:    
-    """
-        Delete a product by an id or by a barcode. This is a logical delete, 
-        change the is_active value to false.
-    Args: 
-        product_id(int): Product id.
-        barcode(str): Product barcode.
-
-    Returns :
-        True if could be deleted. 
-        False if there was an error and log the error.
-    """
-    pass
+    if product_id is not None:
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            logger.error('Prodct Does Not exist')
+            return False
+    else:
+        try:
+            product = Product.objects.get(barcode=barcode)
+        except Product.DoesNotExist:
+            logger.error('Prodct Does Not exist')
+            return False
+    product.is_active = False
+    product.save()
 
 
 def update_product( 
@@ -71,7 +71,21 @@ def update_product(
     last_price: float = 0,
     is_active:bool=True,
     ) -> Product:
-    pass
+    product = Product(
+        name=name,
+        description=description,
+        barcode=barcode,
+        stocked=stocked,
+        stock_type=stock_type,
+        last_price=last_price,
+        is_active=is_active,
+        )
+    try:
+        product.save()
+        return product
+    except Exception as e:
+        logger.error(ERROR_SAVING_PRODUCT % str(e))
+        return False
 
 
 def filter_products( 
@@ -87,23 +101,27 @@ def filter_products(
         description(str): Product description.
         barcode(str): Product barcode.
         is_active(bool): Product state.
-    """
-    pass
-
+    """  
+    query_product = {}
+    if name:
+        query_product.update({'name__icontains': name})
+    if description: 
+        query_product.update({'description__icontains': description})
+    if barcode:
+        query_product.update({'barcode__icontains': barcode})
+    products ={ Product.objects.filter(**query_product).order_by('name')}
 
 def get_product_by_barcode(barcode:str) -> Product:
-    """
-        Get a product by a barcode.
-    Args:
-        barcode(str): Barcode product to search.
-    """
-    pass
+    try:
+        product = Product.objects.get(barcode=barcode)
+    except Product.DoesNoTExist:
+        logger.error('Prodct Does Not exist')
+        return False
 
 
 def get_product_by_id(id:int) ->Product:
-    """
-        Get a product by a product id.
-    Args:
-        id(int): Product id to get.
-    """
-    pass
+    try:
+        product = Product.objects.get(id=id)
+    except Product.DoesNoTExist:
+        logger.error('Prodct Does Not exist')
+        return product
