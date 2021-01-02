@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'desktop_pintu/db.sqlite3'),
     }
 }
 
@@ -33,14 +33,15 @@ SECRET_KEY = '#svb1!^*=+8qqun_ddi1)b)f5kpa%b-)wlg*+j#pj#mwg#c^=='
 
 
 INSTALLED_APPS = [
-  
+    
+    'app',
+    'stock',
+    'products',
     'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.messages',
-    'app',
-    'stock',
-    'products',
+    
    
 ]
 
